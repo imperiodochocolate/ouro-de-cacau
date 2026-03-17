@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Ouro de Cacau</title>
+
+<style>
+
+body{
+font-family:Arial;
+margin:0;
+background:#f4f4f4;
+}
+
+header{
+background:#b30000;
+color:white;
+text-align:center;
+padding:25px;
+}
+
+nav{
+background:#006400;
+display:flex;
+justify-content:center;
+}
+
+nav a{
+color:white;
+padding:15px;
+text-decoration:none;
+font-weight:bold;
+}
+
+.banner{
+background:url("https://images.unsplash.com/photo-1587049352846-4a222e784d38") center/cover;
+height:300px;
+display:flex;
+align-items:center;
+justify-content:center;
+color:white;
+font-size:30px;
+text-shadow:2px 2px 5px black;
+text-align:center;
+padding:20px;
+}
+
+.container{
+max-width:1100px;
+margin:auto;
+padding:40px 20px;
+}
+
+.produtos{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:25px;
+}
+
+.card{
+background:white;
+border-radius:10px;
+box-shadow:0 5px 10px rgba(0,0,0,0.1);
+text-align:center;
+padding-bottom:20px;
+}
+
+.card img{
+width:100%;
+height:220px;
+object-fit:cover;
+}
+
+.preco{
+font-size:22px;
+color:#b30000;
+font-weight:bold;
+}
+
+button{
+background:#006400;
+color:white;
+border:none;
+padding:12px 20px;
+border-radius:5px;
+cursor:pointer;
+margin-top:10px;
+}
+
+button:hover{
+background:#004d00;
+}
+
+.carrinho{
+position:fixed;
+right:10px;
+top:120px;
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.2);
+width:220px;
+}
+
+footer{
+background:#b30000;
+color:white;
+text-align:center;
+padding:20px;
+margin-top:40px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>OURO DE CACAU</h1>
+
+<p>Ovos de Páscoa Artesanais</p>
+
+</header>
+
+<nav>
+
+<a href="#">Início</a>
+<a href="#produtos">Produtos</a>
+
+</nav>
+
+<div class="banner">
+
+A felicidade da Páscoa começa com chocolate 🍫🐣
+
+</div>
+
+<div class="container">
+
+<h2 style="text-align:center;">Momentos de Páscoa</h2>
+
+<div class="produtos" id="produtos">
+
+<div class="card">
+
+<img src="https://images.unsplash.com/photo-1559628233-100c798642d4">
+
+<h3>Ovo Premium</h3>
+
+<p class="preco">R$39,90</p>
+
+<button onclick="addCarrinho(39.90)">Adicionar</button>
+
+</div>
+
+<div class="card">
+
+<img src="https://images.unsplash.com/photo-1520975922203-bf7e6c98c6a1">
+
+<h3>Ovo Gourmet</h3>
+
+<p class="preco">R$49,90</p>
+
+<button onclick="addCarrinho(49.90)">Adicionar</button>
+
+</div>
+
+<div class="card">
+
+<img src="https://images.unsplash.com/photo-1587049352846-4a222e784d38">
+
+<h3>Ovo Deluxe</h3>
+
+<p class="preco">R$69,90</p>
+
+<button onclick="addCarrinho(69.90)">Adicionar</button>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="carrinho">
+
+<h3>Carrinho</h3>
+
+<p>Total:</p>
+
+<p id="total">R$0</p>
+
+<button onclick="finalizar()">Finalizar Pedido</button>
+
+</div>
+
+<footer>
+
+<p>© 2026 Ouro de Cacau</p>
+
+</footer>
+
+<script>
+
+let total = 0;
+
+function addCarrinho(valor){
+
+total += valor;
+
+document.getElementById("total").innerText = "R$" + total.toFixed(2);
+
+}
+
+function finalizar(){
+
+alert("Pedido enviado! Em breve entraremos em contato.");
+
+}
+
+</script>
+
+</body>
+
+</html>
