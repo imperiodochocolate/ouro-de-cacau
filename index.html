@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Imperial Eggs — Páscoa 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+
+/* ── VARIÁVEIS ── */
+:root {
+  --gold:        #d4af37;
+  --gold-light:  #e8cc6a;
+  --gold-dim:    rgba(212,175,55,0.14);
+  --gold-border: rgba(212,175,55,0.28);
+  --black:       #050505;
+  --card-bg:     #0d0d0d;
+  --muted:       #9a9080;
+  --cart-w:      460px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--black);
+  color: var(--muted);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+/* ── BARRA DE PROGRESSO ── */
+#scroll-progress {
+  position: fixed; top: 0; left: 0;
+  height: 2px; width: 0%;
+  background: linear-gradient(to right, #a88820, #d4af37, #e8cc6a, #d4af37);
+  z-index: 999; pointer-events: none;
+  transition: width 0.08s linear;
+}
+
+/* ── ANIMAÇÕES DE ROLAGEM ── */
+[data-reveal] {
+  opacity: 0;
+  transition: opacity 900ms cubic-bezier(0.22,1,0.36,1),
+              transform 900ms cubic-bezier(0.22,1,0.36,1);
+  will-change: opacity, transform;
+}
+[data-reveal="up"]    { transform: translateY(50px); }
+[data-reveal="down"]  { transform: translateY(-30px); }
+[data-reveal="scale"] { transform: scale(0.88); }
+[data-reveal="fade"]  { transform: none; }
+[data-reveal].revealed { opacity: 1; transform: none; }
+[data-delay="1"] { transition-delay:  80ms; }
+[data-delay="2"] { transition-delay: 160ms; }
+[data-delay="3"] { transition-delay: 240ms; }
+[data-delay="4"] { transition-delay: 320ms; }
+[data-delay="5"] { transition-delay: 400ms; }
+[data-delay="6"] { transition-delay: 480ms; }
+[data-delay="7"] { transition-delay: 560ms; }
+
+/* ── PARTÍCULAS DO HEADER ── */
+.particle-field {
+  position: absolute; inset: 0;
+  pointer-events: none; overflow: hidden; z-index: 0;
+}
+.particle {
+  position: absolute;
+  background: var(--gold); border-radius: 50%; opacity: 0;
+  animation: floatUp var(--dur,8s) var(--dly,0s) infinite ease-in-out;
+}
+@keyframes floatUp {
+  0%   { opacity:0; transform:translateY(0) scale(1); }
+  15%  { opacity:.5; }
+  85%  { opacity:.2; }
+  100% { opacity:0; transform:translateY(-130px) scale(.3); }
+}
+
+/* Linha animada do header */
+.animated-rule {
+  display: block; width: 0; height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+  margin: 32px auto 0;
+  transition: width 1.3s cubic-bezier(0.22,1,0.36,1);
+}
+.animated-rule.revealed { width: 200px; }
+
+/* Shimmer hover nos cards */
+.card::after {
+  content: ''; position: absolute; inset: 0; z-index: 3;
+  background: linear-gradient(105deg, transparent 30%, rgba(212,175,55,.07) 50%, transparent 70%);
+  opacity: 0; transform: translateX(-100%);
+  pointer-events: none; transition: opacity .1s;
+}
+.card:hover::after {
+  opacity: 1; transform: translateX(100%);
+  transition: opacity .1s, transform .75s ease;
+}
+
+/* ── OVERLAY ── */
+#overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.75); backdrop-filter: blur(6px);
+  z-index: 90; opacity: 0; pointer-events: none;
+  transition: opacity .4s;
+}
+#overlay.active { opacity: 1; pointer-events: all; }
+
+/* ════════════════════════════════
+   CARRINHO — DRAWER
+════════════════════════════════ */
+#cart-drawer {
+  position: fixed; top: 0; right: 0;
+  width: min(var(--cart-w), 100vw); height: 100vh;
+  background: #070707;
+  border-left: 1px solid var(--gold-border);
+  z-index: 100;
+  display: flex; flex-direction: column;
+  transform: translateX(100%);
+  transition: transform .5s cubic-bezier(.77,0,.175,1);
+}
+#cart-drawer.open { transform: translateX(0); }
+
+/* Header */
+.cart-header {
+  padding: 30px 30px 26px;
+  border-bottom: 1px solid var(--gold-dim);
+  flex-shrink: 0; position: relative;
+}
+.cart-header-top {
+  display: flex; align-items: flex-start; justify-content: space-between;
+}
+.cart-eyebrow {
+  font-size: 9px; letter-spacing: 4px;
+  text-transform: uppercase; color: var(--gold); opacity: .5;
+  display: block; margin-bottom: 4px;
+}
+.cart-header h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 30px; font-weight: 300;
+  color: var(--gold); letter-spacing: 5px; text-transform: uppercase;
+}
+.cart-header-meta { margin-top: 14px; }
+.cart-badge-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--gold-dim); border: 1px solid var(--gold-border);
+  color: var(--gold); font-size: 10px; letter-spacing: 2px;
+  padding: 4px 12px;
+}
+.cart-badge-pill strong { font-weight: 600; }
+.cart-header-rule {
+  position: absolute; bottom: 0; left: 30px; right: 30px; height: 1px;
+  background: linear-gradient(to right, var(--gold), transparent); opacity: .2;
+}
+#btn-close-cart {
+  background: none; border: 1px solid var(--gold-border);
+  color: var(--muted); cursor: pointer;
+  width: 36px; height: 36px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 15px;
+  transition: color .2s, border-color .2s, background .2s;
+}
+#btn-close-cart:hover { color: var(--gold); border-color: var(--gold); background: var(--gold-dim); }
+
+/* Lista de itens */
+#cart-items {
+  flex: 1; overflow-y: auto; position: relative;
+}
+#cart-items::-webkit-scrollbar { width: 2px; }
+#cart-items::-webkit-scrollbar-thumb { background: var(--gold-dim); }
+
+/* Estado vazio */
+#cart-empty {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  height: 100%; gap: 16px; padding: 40px;
+}
+.cart-empty-icon {
+  width: 70px; height: 70px;
+  border: 1px solid var(--gold-border); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; opacity: .3;
+}
+.cart-empty-icon svg { width: 30px; }
+#cart-empty p {
+  font-size: 11px; letter-spacing: 4px;
+  text-transform: uppercase; opacity: .35;
+}
+#cart-empty small {
+  font-size: 10px; letter-spacing: 1px; opacity: .2;
+}
+
+/* Item individual */
+.cart-item {
+  display: grid;
+  grid-template-columns: 78px 1fr auto;
+  gap: 14px; align-items: center;
+  padding: 16px 30px;
+  border-bottom: 1px solid var(--gold-dim);
+  transition: background .2s;
+  animation: slideIn .35s cubic-bezier(.22,1,.36,1);
+}
+@keyframes slideIn {
+  from { opacity:0; transform:translateX(20px); }
+  to   { opacity:1; transform:translateX(0); }
+}
+.cart-item:hover { background: rgba(212,175,55,.025); }
+
+.cart-item-img {
+  width: 78px; height: 78px;
+  border: 1px solid var(--gold-border);
+  background: #111; overflow: hidden; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; position: relative;
+}
+.cart-item-img img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform .4s;
+}
+.cart-item:hover .cart-item-img img { transform: scale(1.07); }
+
+.cart-item-info { min-width: 0; }
+.cart-item-tag {
+  font-size: 8px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--gold); opacity: .45; margin-bottom: 3px;
+}
+.cart-item-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px; color: var(--gold-light);
+  letter-spacing: 1px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  margin-bottom: 6px;
+}
+.cart-item-unit {
+  font-size: 10px; letter-spacing: 1px; color: var(--muted); opacity: .4;
+  margin-bottom: 3px;
+}
+.cart-item-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px; color: var(--gold); letter-spacing: 1px;
+}
+
+/* Controles de quantidade */
+.qty-controls {
+  display: flex; flex-direction: column; align-items: center;
+  border: 1px solid var(--gold-border);
+}
+.qty-btn {
+  background: none; border: none; color: var(--muted); cursor: pointer;
+  width: 30px; height: 28px; font-size: 16px; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  transition: color .2s, background .2s;
+}
+.qty-btn:hover { color: var(--gold); background: var(--gold-dim); }
+.qty-btn.del { color: rgba(255,100,100,.4); }
+.qty-btn.del:hover { color: #ff6060; background: rgba(255,80,80,.08); }
+.qty-sep { width: 100%; height: 1px; background: var(--gold-border); }
+.qty-val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px; color: var(--gold-light);
+  width: 30px; text-align: center; padding: 3px 0;
+  border-top: 1px solid var(--gold-border);
+  border-bottom: 1px solid var(--gold-border);
+}
+
+/* Rodapé do carrinho */
+.cart-footer {
+  border-top: 1px solid var(--gold-dim);
+  background: #050505; flex-shrink: 0;
+}
+.cart-summary {
+  padding: 18px 30px 0;
+}
+.cart-summary-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 5px 0; border-bottom: 1px solid var(--gold-dim);
+}
+.cart-summary-row:last-child { border: none; }
+.cart-summary-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; opacity: .45; }
+.cart-summary-value { font-size: 13px; color: var(--muted); letter-spacing: 1px; }
+.cart-total-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 16px 30px 0;
+}
+.cart-total-label { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); opacity: .6; }
+.cart-total-value {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 36px; font-weight: 300; color: var(--gold); letter-spacing: 2px; line-height: 1;
+}
+.cart-total-value sup {
+  font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 300;
+  vertical-align: super; opacity: .7;
+}
+.cart-actions {
+  padding: 18px 30px 26px; display: flex; flex-direction: column; gap: 9px;
+}
+#btn-checkout {
+  width: 100%; background: var(--gold); color: #000; border: none;
+  padding: 16px; font-family: 'Montserrat', sans-serif;
+  font-size: 11px; font-weight: 600; letter-spacing: 5px; text-transform: uppercase;
+  cursor: pointer; position: relative; overflow: hidden;
+  transition: letter-spacing .4s;
+}
+#btn-checkout::before {
+  content: ''; position: absolute; inset: 0;
+  background: var(--gold-light); transform: translateX(-100%);
+  transition: transform .4s ease;
+}
+#btn-checkout:not(:disabled):hover::before { transform: translateX(0); }
+#btn-checkout:not(:disabled):hover { letter-spacing: 7px; }
+#btn-checkout span { position: relative; z-index: 1; }
+#btn-checkout:disabled { opacity: .3; cursor: default; }
+.cart-sec-actions { display: flex; gap: 8px; }
+#btn-continue, #btn-clear {
+  flex: 1; background: none; padding: 10px;
+  font-family: 'Montserrat', sans-serif; font-size: 9px;
+  letter-spacing: 3px; text-transform: uppercase; cursor: pointer;
+  transition: color .2s, border-color .2s, background .2s;
+}
+#btn-continue {
+  border: 1px solid var(--gold-border); color: var(--muted);
+}
+#btn-continue:hover { color: var(--gold); border-color: var(--gold); background: var(--gold-dim); }
+#btn-clear {
+  border: 1px solid rgba(255,80,80,.15); color: rgba(255,100,100,.35);
+}
+#btn-clear:hover { border-color: rgba(255,80,80,.5); color: #ff6060; }
+
+/* ── TOAST ── */
+#toast {
+  position: fixed; bottom: 38px; left: 50%;
+  transform: translateX(-50%) translateY(14px);
+  background: #0f0f0f; border: 1px solid var(--gold-border);
+  color: var(--gold-light); font-size: 10px; letter-spacing: 3px;
+  text-transform: uppercase; padding: 12px 28px;
+  z-index: 300; white-space: nowrap; opacity: 0; pointer-events: none;
+  transition: opacity .3s, transform .3s;
+  display: flex; align-items: center; gap: 10px;
+}
+#toast::before {
+  content: ''; width: 4px; height: 4px;
+  background: var(--gold); border-radius: 50%; flex-shrink: 0;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── MODAL CHECKOUT ── */
+#checkout-modal {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px; opacity: 0; pointer-events: none; transition: opacity .35s;
+}
+#checkout-modal.open { opacity: 1; pointer-events: all; }
+.modal-box {
+  background: #060606; border: 1px solid var(--gold-border);
+  max-width: 560px; width: 100%; overflow: hidden;
+  transform: translateY(18px) scale(.97);
+  transition: transform .35s cubic-bezier(.22,1,.36,1);
+}
+#checkout-modal.open .modal-box { transform: none; }
+.modal-top {
+  padding: 44px 40px 32px; text-align: center;
+  border-bottom: 1px solid var(--gold-dim); position: relative;
+}
+.modal-top::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+}
+.modal-icon {
+  width: 64px; height: 64px; border: 1px solid var(--gold-border); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 18px; font-size: 26px;
+}
+.modal-box h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px; color: var(--gold); font-weight: 300;
+  letter-spacing: 5px; text-transform: uppercase; margin-bottom: 10px;
+}
+.modal-top p { font-size: 11px; letter-spacing: 1px; line-height: 1.9; opacity: .55; }
+.modal-body { padding: 24px 40px; border-bottom: 1px solid var(--gold-dim); max-height: 210px; overflow-y: auto; }
+.modal-body::-webkit-scrollbar { width: 2px; }
+.modal-body::-webkit-scrollbar-thumb { background: var(--gold-dim); }
+.modal-order-label {
+  font-size: 9px; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--gold); opacity: .4; margin-bottom: 12px;
+}
+.modal-line {
+  display: flex; justify-content: space-between;
+  font-size: 12px; letter-spacing: .5px;
+  padding: 7px 0; border-bottom: 1px solid var(--gold-dim); color: var(--muted);
+}
+.modal-line:last-child { border: none; }
+.modal-line span:last-child { color: var(--gold-light); }
+.modal-total-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 18px 40px 0;
+}
+.modal-total-row span:first-child { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; opacity: .5; }
+.modal-total-row span:last-child {
+  font-family: 'Cormorant Garamond', serif; font-size: 30px; color: var(--gold); font-weight: 300;
+}
+.modal-actions { padding: 20px 40px 36px; display: flex; gap: 12px; }
+#btn-modal-close {
+  flex: 2; background: var(--gold); color: #000; border: none; padding: 15px;
+  font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 600;
+  letter-spacing: 4px; text-transform: uppercase; cursor: pointer; transition: background .3s, letter-spacing .3s;
+}
+#btn-modal-close:hover { background: var(--gold-light); letter-spacing: 6px; }
+#btn-modal-whatsapp {
+  flex: 1; background: none; border: 1px solid rgba(37,211,102,.3);
+  color: rgba(37,211,102,.6); padding: 15px;
+  font-family: 'Montserrat', sans-serif; font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase; cursor: pointer; transition: border-color .2s, color .2s, background .2s;
+}
+#btn-modal-whatsapp:hover { border-color: rgba(37,211,102,.7); color: #25d366; background: rgba(37,211,102,.05); }
+
+/* ── HEADER ── */
+header {
+  text-align: center; padding: 70px 20px 50px; position: relative;
+}
+.logo-sub {
+  font-size: 10px; letter-spacing: 7px; text-transform: uppercase;
+  color: var(--gold); opacity: .55; margin-bottom: 14px;
+  position: relative; z-index: 1;
+}
+header h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(50px, 9vw, 96px); font-weight: 300; letter-spacing: 14px;
+  color: var(--gold); text-transform: uppercase; line-height: 1;
+  position: relative; z-index: 1;
+}
+header > p {
+  font-size: 11px; letter-spacing: 5px; text-transform: uppercase;
+  opacity: .35; margin-top: 12px; position: relative; z-index: 1;
+}
+
+/* ── NAV ── */
+nav {
+  display: flex; justify-content: center; align-items: center;
+  gap: 48px; padding: 18px 24px;
+  border-bottom: 1px solid var(--gold-dim);
+  position: sticky; top: 0;
+  background: rgba(5,5,5,.96); backdrop-filter: blur(12px); z-index: 50;
+}
+nav a {
+  color: var(--muted); text-decoration: none;
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  transition: color .3s; position: relative;
+}
+nav a::after {
+  content: ''; position: absolute; bottom: -4px; left: 0;
+  width: 0; height: 1px; background: var(--gold); transition: width .3s;
+}
+nav a:hover { color: var(--gold); }
+nav a:hover::after { width: 100%; }
+#nav-cart-btn {
+  background: none; border: 1px solid var(--gold-border);
+  color: var(--gold); cursor: pointer; padding: 9px 20px;
+  font-family: 'Montserrat', sans-serif; font-size: 10px; letter-spacing: 3px;
+  text-transform: uppercase; display: flex; align-items: center; gap: 10px;
+  transition: background .3s, border-color .3s;
+}
+#nav-cart-btn:hover { background: var(--gold-dim); border-color: var(--gold); }
+#cart-nav-badge {
+  background: var(--gold); color: #000; font-size: 9px; font-weight: 700;
+  min-width: 18px; height: 18px; border-radius: 9px;
+  display: none; align-items: center; justify-content: center; padding: 0 4px;
+  animation: popIn .35s cubic-bezier(.34,1.56,.64,1);
+}
+#cart-nav-badge.visible { display: flex; }
+@keyframes popIn { from { transform:scale(0); opacity:0; } to { transform:scale(1); opacity:1; } }
+
+/* ── BANNER / LOGO ── */
+.banner { text-align: center; padding: 50px 20px 60px; }
+.banner-logo {
+  display: block; max-width: 320px; width: 55%; margin: 0 auto 36px;
+  filter: drop-shadow(0 0 28px rgba(212,175,55,.22));
+  transition: filter .4s;
+}
+.banner-logo:hover { filter: drop-shadow(0 0 44px rgba(212,175,55,.44)); }
+.banner-logo-rule {
+  display: block; width: 100px; height: 1px; margin: 0 auto 36px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+  opacity: .45;
+}
+.banner-img-wrap { display: inline-block; position: relative; }
+.banner-img-wrap img {
+  max-width: 880px; width: 90%; border: 1px solid var(--gold-border);
+  border-radius: 4px; display: block;
+  background: linear-gradient(135deg, #0c0900, #1a1500, #0c0900);
+}
+.banner-label {
+  position: absolute; bottom: 20px; right: 5%;
+  font-family: 'Cormorant Garamond', serif; font-size: 13px;
+  letter-spacing: 5px; text-transform: uppercase; color: var(--gold); opacity: .5;
+}
+
+/* ── SECTION HEADER ── */
+.section-header { text-align: center; padding: 60px 20px 50px; }
+.eyebrow { font-size: 10px; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); opacity: .5; margin-bottom: 14px; }
+.section-header h2 {
+  font-family: 'Cormorant Garamond', serif; font-size: clamp(32px,5vw,58px);
+  font-weight: 300; letter-spacing: 7px; color: var(--gold); text-transform: uppercase;
+}
+.divider { width: 60px; height: 1px; background: var(--gold); margin: 22px auto 0; opacity: .35; }
+
+/* ── GRID ── */
+.container { max-width: 1300px; margin: auto; padding: 0 30px 100px; }
+.produtos { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 2px; }
+
+/* ── CARD ── */
+.card {
+  background: var(--card-bg); border: 1px solid var(--gold-dim);
+  overflow: hidden; position: relative;
+  transition: border-color .4s, transform .45s cubic-bezier(.22,1,.36,1);
+}
+.card:hover { border-color: rgba(212,175,55,.5); transform: translateY(-5px); z-index: 2; }
+.card-img-wrap {
+  background: linear-gradient(135deg,#0f0c00,#181400,#0f0c00);
+  position: relative; overflow: hidden; aspect-ratio: 1/1;
+}
+.card-img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform .7s cubic-bezier(.22,1,.36,1);
+}
+.card:hover .card-img { transform: scale(1.07); }
+.card-fallback {
+  position: absolute; inset: 0; display: flex; align-items: center;
+  justify-content: center; font-size: 68px; opacity: .07; pointer-events: none; z-index: 0;
+}
+.card-body { padding: 24px 22px 30px; border-top: 1px solid var(--gold-dim); }
+.card-tag { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); opacity: .45; margin-bottom: 7px; }
+.card h3 {
+  font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 400;
+  letter-spacing: 2px; color: var(--gold-light); margin-bottom: 7px;
+}
+.card-desc { font-size: 11px; line-height: 1.75; opacity: .5; margin-bottom: 18px; min-height: 36px; }
+.preco {
+  font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 300;
+  color: var(--gold); letter-spacing: 1px; margin-bottom: 20px;
+}
+.preco sup { font-size: 13px; opacity: .55; font-family: 'Montserrat',sans-serif; font-weight: 300; vertical-align: super; }
+.btn-add {
+  width: 100%; background: transparent; color: var(--gold);
+  border: 1px solid var(--gold-border); padding: 14px 20px;
+  font-family: 'Montserrat', sans-serif; font-size: 10px; letter-spacing: 3px;
+  text-transform: uppercase; cursor: pointer;
+  position: relative; overflow: hidden; transition: border-color .3s;
+}
+.btn-add::before {
+  content: ''; position: absolute; inset: 0;
+  background: var(--gold); transform: translateX(-100%);
+  transition: transform .4s cubic-bezier(.22,1,.36,1); z-index: 0;
+}
+.btn-add:hover::before { transform: translateX(0); }
+.btn-add:hover { border-color: var(--gold); }
+.btn-add span { position: relative; z-index: 1; transition: color .4s; }
+.btn-add:hover span { color: #000; }
+.btn-add.added { border-color: rgba(212,175,55,.6); background: var(--gold-dim); }
+
+/* ── FOOTER ── */
+footer { text-align: center; padding: 44px 20px; border-top: 1px solid var(--gold-dim); }
+footer p { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; opacity: .22; }
+
+/* ── RESPONSIVO ── */
+@media (max-width: 640px) {
+  .produtos { grid-template-columns: 1fr 1fr; }
+  nav { gap: 16px; }
+  .modal-actions { flex-direction: column; }
+  .cart-item { padding: 14px 18px; }
+  .cart-header, .cart-summary, .cart-actions, .cart-total-row { padding-left: 18px; padding-right: 18px; }
+  .modal-top, .modal-body, .modal-actions, .modal-total-row { padding-left: 24px; padding-right: 24px; }
+}
+@media (max-width: 400px) { .produtos { grid-template-columns: 1fr; } }
+
+</style>
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+<div id="overlay"></div>
+<div id="toast"></div>
+
+<!-- ═══════════════ CARRINHO ═══════════════ -->
+<div id="cart-drawer" role="dialog" aria-label="Carrinho">
+
+  <div class="cart-header">
+    <div class="cart-header-top">
+      <div>
+        <span class="cart-eyebrow">Minha Seleção</span>
+        <h2>Carrinho</h2>
+      </div>
+      <button id="btn-close-cart" aria-label="Fechar">&#10005;</button>
+    </div>
+    <div class="cart-header-meta">
+      <span class="cart-badge-pill"><strong id="drawer-count">0</strong>&nbsp;item(s)</span>
+    </div>
+    <div class="cart-header-rule"></div>
+  </div>
+
+  <div id="cart-items">
+    <!-- Conteúdo injetado pelo JS -->
+  </div>
+
+  <div class="cart-footer">
+    <div class="cart-summary" id="cart-summary" style="display:none">
+      <div class="cart-summary-row">
+        <span class="cart-summary-label">Subtotal</span>
+        <span class="cart-summary-value" id="val-subtotal">R$ 0,00</span>
+      </div>
+      <div class="cart-summary-row">
+        <span class="cart-summary-label">Frete</span>
+        <span class="cart-summary-value" style="color:rgba(37,211,102,.7)">A combinar</span>
+      </div>
+    </div>
+    <div class="cart-total-row">
+      <span class="cart-total-label">Total</span>
+      <span class="cart-total-value"><sup>R$</sup><span id="val-total">0,00</span></span>
+    </div>
+    <div class="cart-actions">
+      <button id="btn-checkout" disabled><span>Finalizar Pedido</span></button>
+      <div class="cart-sec-actions">
+        <button id="btn-continue">&#8592; Continuar</button>
+        <button id="btn-clear">Limpar tudo</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════ MODAL ═══════════════ -->
+<div id="checkout-modal">
+  <div class="modal-box">
+    <div class="modal-top">
+      <div class="modal-icon">&#128346;</div>
+      <h3>Pedido Registrado</h3>
+      <p>Obrigado pela sua escolha.<br>Em breve entraremos em contato para confirmar a entrega.</p>
+    </div>
+    <div class="modal-body">
+      <p class="modal-order-label">Resumo do pedido</p>
+      <div id="modal-lines"></div>
+    </div>
+    <div class="modal-total-row">
+      <span>Total</span>
+      <span id="modal-total">R$ 0,00</span>
+    </div>
+    <div class="modal-actions">
+      <button id="btn-modal-close">Continuar comprando</button>
+      <button id="btn-modal-wpp">WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ LOJA ═══════════════ -->
+<header>
+  <div class="particle-field" id="pfield"></div>
+  <p class="logo-sub" data-reveal="down">Chocolateria Artesanal</p>
+  <h1 data-reveal="up">Imperial Eggs</h1>
+  <p data-reveal="fade" data-delay="2">Ovos de Páscoa Luxuosos</p>
+  <span class="animated-rule" id="header-rule"></span>
+</header>
+
+<nav>
+  <a href="#">Início</a>
+  <a href="#produtos">Coleção</a>
+  <a href="#">Contato</a>
+  <button id="nav-cart-btn">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0">
+      <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <path d="M16 10a4 4 0 01-8 0"/>
+    </svg>
+    Carrinho
+    <span id="cart-nav-badge"></span>
+  </button>
+</nav>
+
+<div class="banner">
+  <!-- LOGO: coloque logo.png na mesma pasta deste arquivo -->
+  <img class="banner-logo" src="logo.png" alt="Imperial Eggs" data-reveal="scale">
+  <span class="banner-logo-rule" data-reveal="fade" data-delay="1"></span>
+  <!-- Imagem de capa: coloque luxury-ovos.png na mesma pasta -->
+  <div class="banner-img-wrap" data-reveal="up" data-delay="2">
+    <img src="luxury-ovos.png" alt="Imperial Eggs — Coleção Premium">
+    <span class="banner-label">Páscoa 2026</span>
+  </div>
+</div>
+
+<div class="section-header">
+  <p class="eyebrow" data-reveal="up">Artesanal &amp; Premium</p>
+  <h2 data-reveal="up" data-delay="1">Coleção Exclusiva</h2>
+  <div class="divider" data-reveal="scale" data-delay="2"></div>
+</div>
+
+<div class="container">
+  <div class="produtos" id="produtos"></div>
+</div>
+
+<footer data-reveal="up">
+  <p>© 2026 Imperial Eggs &nbsp;·&nbsp; Chocolateria Artesanal &nbsp;·&nbsp; Todos os direitos reservados</p>
+</footer>
+
+<!-- ═══════════════ JAVASCRIPT ═══════════════ -->
+<script>
+/* ─────────────────────────────
+   CATÁLOGO
+   Altere "img" pelo nome do seu arquivo de imagem
+   ───────────────────────────── */
+var PRODUTOS = [
+  { id:1, nome:'Ovo Clássico',   tag:'Linha Essencial', desc:'Chocolate ao leite puro, receita tradicional',      preco:29.90,  cents:2990,  img:'ovo-classico.jpg'   },
+  { id:2, nome:'Ovo Crocante',   tag:'Linha Essencial', desc:'Chocolate com flocos crocantes de caramelo',        preco:39.90,  cents:3990,  img:'ovo-crocante.jpg'   },
+  { id:3, nome:'Ovo Brigadeiro', tag:'Linha Especial',  desc:'Recheado com brigadeiro belga artesanal',           preco:48.90,  cents:4890,  img:'ovo-brigadeiro.jpg' },
+  { id:4, nome:'Ovo Trufado',    tag:'Linha Especial',  desc:'Ganache de trufa negra com cacau 70%',              preco:69.90,  cents:6990,  img:'ovo-trufado.jpg'    },
+  { id:5, nome:'Ovo Gourmet',    tag:'Linha Gourmet',   desc:'Chocolates importados com recheio surpresa',        preco:89.90,  cents:8990,  img:'ovo-gourmet.jpg'    },
+  { id:6, nome:'Ovo Prestige',   tag:'Linha Gourmet',   desc:'Coco e chocolate negro em camadas finas',           preco:99.90,  cents:9990,  img:'ovo-prestige.jpg'   },
+  { id:7, nome:'Ovo Supremo',    tag:'Linha Imperial',  desc:'Edição limitada — ouro comestível e pistache',      preco:109.00, cents:10900, img:'ovo-supremo.jpg'    }
+];
+
+var cart = {};
+
+/* ── utilitários ── */
+function brl(v) { return 'R$\u00a0' + v.toFixed(2).replace('.', ','); }
+function num(v) { return v.toFixed(2).replace('.', ','); }
+function get(id) { return document.getElementById(id); }
+
+/* ─────────────────────────────
+   RENDERIZAR CARDS
+   ───────────────────────────── */
+function renderProdutos() {
+  var html = '';
+  for (var i = 0; i < PRODUTOS.length; i++) {
+    var p = PRODUTOS[i];
+    html +=
+      '<div class="card" id="card-' + p.id + '">' +
+        '<div class="card-img-wrap">' +
+          '<div class="card-fallback">&#127818;</div>' +
+          '<img class="card-img" src="' + p.img + '" alt="' + p.nome + '" ' +
+               'onerror="this.style.display=\'none\'">' +
+        '</div>' +
+        '<div class="card-body">' +
+          '<p class="card-tag">' + p.tag + '</p>' +
+          '<h3>' + p.nome + '</h3>' +
+          '<p class="card-desc">' + p.desc + '</p>' +
+          '<p class="preco" data-counted="' + p.cents + '"><sup>R$</sup>' +
+            p.preco.toFixed(2).replace('.', ',') + '</p>' +
+          '<button class="btn-add" id="btn-' + p.id + '" ' +
+                  'onclick="addToCart(' + p.id + ')">' +
+            '<span>Adicionar ao Carrinho</span>' +
+          '</button>' +
+        '</div>' +
+      '</div>';
+  }
+  get('produtos').innerHTML = html;
+  initRevealCards();
+  initPrecoCounters();
+}
+
+/* ─────────────────────────────
+   ADICIONAR AO CARRINHO
+   ───────────────────────────── */
+function addToCart(id) {
+  var p = null;
+  for (var i = 0; i < PRODUTOS.length; i++) {
+    if (PRODUTOS[i].id === id) { p = PRODUTOS[i]; break; }
+  }
+  if (!p) return;
+
+  if (cart[id]) { cart[id].qty++; }
+  else { cart[id] = { p: p, qty: 1 }; }
+
+  var btn = get('btn-' + id);
+  if (btn) {
+    btn.classList.add('added');
+    btn.querySelector('span').textContent = '\u2713 No Carrinho';
+    setTimeout(function() {
+      btn.classList.remove('added');
+      btn.querySelector('span').textContent = 'Adicionar ao Carrinho';
+    }, 1800);
+  }
+  toast(p.nome + ' adicionado');
+  renderCart();
+}
+
+/* ─────────────────────────────
+   ALTERAR QUANTIDADE
+   ───────────────────────────── */
+function changeQty(id, delta) {
+  if (!cart[id]) return;
+  cart[id].qty += delta;
+  if (cart[id].qty <= 0) delete cart[id];
+  renderCart();
+}
+function removeItem(id) {
+  delete cart[id];
+  renderCart();
+}
+
+/* ─────────────────────────────
+   RENDERIZAR CARRINHO — único lugar que monta o HTML
+   ───────────────────────────── */
+function renderCart() {
+  var keys     = Object.keys(cart);
+  var totalQty = 0;
+  var totalVal = 0;
+  for (var k in cart) {
+    totalQty += cart[k].qty;
+    totalVal += cart[k].p.preco * cart[k].qty;
+  }
+
+  /* badge da nav */
+  var badge = get('cart-nav-badge');
+  badge.textContent = totalQty;
+  if (totalQty > 0) badge.classList.add('visible');
+  else badge.classList.remove('visible');
+
+  /* contadores no drawer */
+  get('drawer-count').textContent = totalQty;
+  get('val-total').textContent    = num(totalVal);
+  get('val-subtotal').textContent = brl(totalVal);
+  get('cart-summary').style.display = keys.length ? 'block' : 'none';
+
+  /* botão finalizar */
+  get('btn-checkout').disabled = totalQty === 0;
+
+  /* lista de itens */
+  var wrap = get('cart-items');
+
+  if (keys.length === 0) {
+    /* — estado vazio — */
+    wrap.innerHTML =
+      '<div id="cart-empty">' +
+        '<div class="cart-empty-icon">' +
+          '<svg viewBox="0 0 48 48" fill="none">' +
+            '<path d="M6 6h4l6 24h20l4-16H12" stroke="#d4af37" stroke-width="1.2" ' +
+                  'stroke-linecap="round" stroke-linejoin="round"/>' +
+            '<circle cx="18" cy="36" r="2.5" stroke="#d4af37" stroke-width="1.2"/>' +
+            '<circle cx="32" cy="36" r="2.5" stroke="#d4af37" stroke-width="1.2"/>' +
+          '</svg>' +
+        '</div>' +
+        '<p>Carrinho vazio</p>' +
+        '<small>Adicione ovos da coleção</small>' +
+      '</div>';
+    return;
+  }
+
+  /* — itens — */
+  var html = '';
+  for (var k in cart) {
+    var item  = cart[k];
+    var p     = item.p;
+    var qty   = item.qty;
+    var isOne = qty <= 1;
+
+    html +=
+      '<div class="cart-item">' +
+        '<div class="cart-item-img">' +
+          '<img src="' + p.img + '" alt="' + p.nome + '" ' +
+               'onerror="this.style.display=\'none\'">' +
+        '</div>' +
+        '<div class="cart-item-info">' +
+          '<p class="cart-item-tag">'  + p.tag + '</p>' +
+          '<p class="cart-item-name">' + p.nome + '</p>' +
+          '<p class="cart-item-unit">' + brl(p.preco) + ' / un.</p>' +
+          '<p class="cart-item-price">' + brl(p.preco * qty) + '</p>' +
+        '</div>' +
+        '<div class="qty-controls">' +
+          '<button class="qty-btn" onclick="changeQty(' + p.id + ',1)">+</button>' +
+          '<div class="qty-sep"></div>' +
+          '<span class="qty-val">' + qty + '</span>' +
+          '<div class="qty-sep"></div>' +
+          '<button class="qty-btn ' + (isOne ? 'del' : '') + '" ' +
+                  'onclick="' + (isOne ? 'removeItem(' + p.id + ')' : 'changeQty(' + p.id + ',-1)') + '">' +
+            (isOne ? '&#10005;' : '&#8722;') +
+          '</button>' +
+        '</div>' +
+      '</div>';
+  }
+  wrap.innerHTML = html;
+}
+
+/* ─────────────────────────────
+   ABRIR / FECHAR CARRINHO
+   ───────────────────────────── */
+function openCart()  {
+  get('cart-drawer').classList.add('open');
+  get('overlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeCart() {
+  get('cart-drawer').classList.remove('open');
+  get('overlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+get('nav-cart-btn').addEventListener('click', openCart);
+get('btn-close-cart').addEventListener('click', closeCart);
+get('btn-continue').addEventListener('click', closeCart);
+get('overlay').addEventListener('click', function() {
+  closeCart();
+  get('checkout-modal').classList.remove('open');
+  document.body.style.overflow = '';
+});
+
+/* ─────────────────────────────
+   LIMPAR
+   ───────────────────────────── */
+get('btn-clear').addEventListener('click', function() {
+  if (!Object.keys(cart).length) return;
+  cart = {};
+  renderCart();
+  toast('Carrinho limpo');
+});
+
+/* ─────────────────────────────
+   FINALIZAR PEDIDO
+   ───────────────────────────── */
+get('btn-checkout').addEventListener('click', function() {
+  var keys = Object.keys(cart);
+  if (!keys.length) return;
+
+  var totalVal = 0;
+  var linesHTML = '';
+  var wppMsg = 'Olá! Gostaria de confirmar meu pedido Imperial Eggs:\n\n';
+
+  for (var k in cart) {
+    var item = cart[k];
+    var linha = item.p.nome + ' x' + item.qty + ' — ' + brl(item.p.preco * item.qty);
+    totalVal += item.p.preco * item.qty;
+    linesHTML += '<div class="modal-line"><span>' + item.p.nome + ' &times; ' + item.qty +
+                 '</span><span>' + brl(item.p.preco * item.qty) + '</span></div>';
+    wppMsg += '• ' + linha + '\n';
+  }
+  wppMsg += '\nTotal: ' + brl(totalVal);
+
+  get('modal-lines').innerHTML = linesHTML;
+  get('modal-total').textContent = brl(totalVal);
+  get('btn-modal-wpp').dataset.msg = wppMsg;
+
+  closeCart();
+  get('checkout-modal').classList.add('open');
+  get('overlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+
+  cart = {};
+  renderCart();
+});
+
+get('btn-modal-close').addEventListener('click', function() {
+  get('checkout-modal').classList.remove('open');
+  get('overlay').classList.remove('active');
+  document.body.style.overflow = '';
+});
+get('btn-modal-wpp').addEventListener('click', function() {
+  var msg = encodeURIComponent(this.dataset.msg || 'Olá! Quero confirmar meu pedido.');
+  window.open('https://wa.me/?text=' + msg, '_blank');
+});
+
+/* ─────────────────────────────
+   TOAST
+   ───────────────────────────── */
+var _toastTimer;
+function toast(msg) {
+  var t = get('toast');
+  t.childNodes[t.childNodes.length - 1] && (t.lastChild.nodeType === 3) && t.removeChild(t.lastChild);
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(function() { t.classList.remove('show'); }, 2400);
+}
+
+/* ─────────────────────────────
+   ESC
+   ───────────────────────────── */
+document.addEventListener('keydown', function(e) {
+  if (e.key !== 'Escape') return;
+  closeCart();
+  get('checkout-modal').classList.remove('open');
+  get('overlay').classList.remove('active');
+  document.body.style.overflow = '';
+});
+
+/* ═══════════════════════════════
+   ANIMAÇÕES
+   ═══════════════════════════════ */
+(function() {
+
+  /* 1. Barra de progresso */
+  var bar = get('scroll-progress');
+  window.addEventListener('scroll', function() {
+    var total = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = (total > 0 ? (window.scrollY / total) * 100 : 0) + '%';
+  }, { passive: true });
+
+  /* 2. Observer de reveal */
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { e.target.classList.add('revealed'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('[data-reveal]').forEach(function(el) { observer.observe(el); });
+
+  var rule = get('header-rule');
+  if (rule) {
+    new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('revealed'); });
+    }, { threshold: 0.5 }).observe(rule);
+  }
+
+  /* 3. Atribuir reveal aos cards dinâmicos */
+  window.initRevealCards = function() {
+    document.querySelectorAll('.card:not([data-reveal])').forEach(function(card, i) {
+      card.setAttribute('data-reveal', 'up');
+      card.setAttribute('data-delay', String((i % 7) + 1));
+      observer.observe(card);
+    });
+  };
+
+  /* 4. Partículas */
+  var field = get('pfield');
+  if (field) {
+    for (var i = 0; i < 30; i++) {
+      var s = document.createElement('span');
+      s.className = 'particle';
+      s.style.cssText =
+        'left:'   + (Math.random() * 100)   + '%;' +
+        'top:'    + (30 + Math.random()*70) + '%;' +
+        '--dur:'  + (6 + Math.random()*12)  + 's;' +
+        '--dly:-' + (Math.random() * 12)    + 's;' +
+        'width:'  + (1 + Math.random()*2.5) + 'px;' +
+        'height:' + (1 + Math.random()*2.5) + 'px;';
+      field.appendChild(s);
+    }
+  }
+
+  /* 5. Contador de preços */
+  window.initPrecoCounters = function() {
+    document.querySelectorAll('.preco[data-counted]').forEach(function(el) {
+      var target  = parseInt(el.getAttribute('data-counted'), 10);
+      var started = false;
+      new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+          if (e.isIntersecting && !started) {
+            started = true;
+            animatePreco(el, target);
+          }
+        });
+      }, { threshold: 0.6 }).observe(el);
+    });
+  };
+
+  function animatePreco(el, targetCents) {
+    var dur  = 800, t0 = null;
+    var from = Math.max(0, targetCents - 2500);
+    function fmt(c) {
+      return 'R$ ' + Math.floor(c / 100) + ',' + String(c % 100).padStart(2, '0');
+    }
+    function step(ts) {
+      if (!t0) t0 = ts;
+      var prog = Math.min((ts - t0) / dur, 1);
+      var ease = 1 - Math.pow(1 - prog, 4);
+      el.textContent = fmt(Math.round(from + (targetCents - from) * ease));
+      if (prog < 1) requestAnimationFrame(step);
+      else el.innerHTML = '<sup>R$</sup>' + (targetCents / 100).toFixed(2).replace('.', ',');
+    }
+    requestAnimationFrame(step);
+  }
+
+})();
+
+/* ── INIT ── */
+renderProdutos();
+renderCart();
+</script>
+</body>
+</html>
